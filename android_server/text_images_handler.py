@@ -14,13 +14,15 @@ class TextImageActionHandler(web.View):
     async def post(self):
         request_data = await self.request.post()
         request_body_data = multidict_to_dict(request_data)
+        print(request_data)
+        print(request_body_data)
         self.logger.info(f'TextImageActionHandler got request with body: {request_body_data}')
         if request_body_data.get('text_image'):
-            image_bytes = request_body_data['text_image'].file
-            self.logger.info(f'TextImageActionHandler succesfully load image')
+            self.logger.info(f'TextImageActionHandler succesfully load images')
+            for image in request_body_data['text_image']:
+                image_bytes = image.file
+                img = Image.open(io.BytesIO(image_bytes.read()))
+                img.show()
 
-            img = Image.open(io.BytesIO(image_bytes.read()))
-            img.show()
-
-        self.logger.info('Image was proccessed, ')
+        self.logger.info('Images was proccessed')
         return web.json_response(data=[1, 2, 3], status=201)
