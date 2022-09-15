@@ -17,16 +17,8 @@ def set_logging(service_name):
 
 
 def multidict_to_dict(multidict):
-    # print(multidict)
     d = {}
     for k in multidict.keys():
         v = multidict.getall(k)
-        if isinstance(v, list):
-            if len(v) > 1:
-                d[k] = v
-            else:
-                d[k] = v[0]
-        else:
-            d[k] = v
-
+        d[k] = v[0] if isinstance(v, list) and len(v) == 1 else v
     return d
