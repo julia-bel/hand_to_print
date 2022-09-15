@@ -17,9 +17,6 @@ def set_logging(service_name):
 
 
 def multidict_to_dict(multidict):
-    print(multidict)
-    d = {}
-    for k in multidict.keys():
-        v = multidict.getall(k)
+    return {k: multidict.getall(k) for k in multidict.keys()}
         d[k] = v
     return d
