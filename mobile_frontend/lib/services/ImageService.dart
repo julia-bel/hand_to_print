@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'HttpService.dart';
 import '../canvas/Painter.dart';
-import 'dart:convert';
 
 class ImageService {
 

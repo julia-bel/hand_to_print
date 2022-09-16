@@ -1,10 +1,13 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import 'canvas/Draw.dart';
 import 'services/ImageService.dart';
-import 'canvas/Painter.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (_) => CanvasProvider(),
+      child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: const MyHomePage(title: 'супер пупер приложение'),
+      home: const MyHomePage(title: 'Hand To Print'),
     );
   }
 }
@@ -35,45 +38,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double canvasHeight = 0;
-    double canvasWidth = 0;
+
+    CanvasProvider canvasProvider = Provider.of<CanvasProvider>(context);
 
     var appBar = AppBar(
       title: Text(widget.title),
     );
 
-    var customPaint = CustomPaint(
-          child: Container(
-            height: () {
-              canvasHeight = (MediaQuery.of(context).size.height - appBar.preferredSize.height) * 0.85;
-              return canvasHeight;
-            }.call(),
-
-            width: () {
-              canvasWidth = MediaQuery.of(context).size.width;
-              return canvasWidth;
-            }.call(),
-
-            color: Colors.black,
-          ),
-    foregroundPainter: Painter(),
-    );
-
+    canvasProvider.appBarHeight = appBar.preferredSize.height;
+    log(canvasProvider.appBarHeight.toString());
     return Scaffold(
       appBar: appBar,
       body: Column(
         children: [
-        CustomPaint(
-          child: customPaint,
-          foregroundPainter: Painter(),
-        ),
-        OutlinedButton(
-            onPressed: () {
-              ImageService.createImage(canvasWidth, canvasHeight);
-            },
-            child: const Text('Сохранить'))
+          Draw(),
+          OutlinedButton(
+              onPressed: () {
+                ImageService.createImage(canvasProvider.width, canvasProvider.height);
+              },
+              child: const Text('Сохранить')
+          )
         ],
       )
     );
+
+  }
+}
+
+class CanvasProvider extends ChangeNotifier {
+  double width = 0;
+  double height = 0;
+  double appBarHeight = 0;
+
+  void setWidth(double value) {
+    width = value;
+  }
+
+  void setHeight(double value) {
+    height = value;
   }
 }
