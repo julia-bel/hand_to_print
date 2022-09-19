@@ -4,11 +4,11 @@ import '../canvas/Painter.dart';
 
 class ImageService {
 
-  static createImage(canvasWidth, canvasHeight) {
+  static createImage(canvasWidth, canvasHeight, points) {
 
     var pictureRecorder = new PictureRecorder();
     Canvas canvas = new Canvas(pictureRecorder);
-    Painter painter = new Painter();
+    Painter painter = new Painter(pointsList: points);
 
     painter.paint(canvas, new Size(canvasWidth, canvasHeight));
 

@@ -54,21 +54,29 @@ class _MyHomePageState extends State<MyHomePage> {
           Draw(),
           OutlinedButton(
               onPressed: () {
-                ImageService.createImage(canvasProvider.width, canvasProvider.height);
+                ImageService.createImage(canvasProvider.width, canvasProvider.height, canvasProvider.pointsList);
               },
               child: const Text('Сохранить')
+          ),
+          OutlinedButton(
+              onPressed: () {
+                canvasProvider.pointsList.clear();
+              },
+              child: const Text('Очистить')
           )
         ],
       )
     );
 
   }
+
 }
 
 class CanvasProvider extends ChangeNotifier {
   double width = 0;
   double height = 0;
   double appBarHeight = 0;
+  List<DrawingPoints> pointsList = [];
 
   void setWidth(double value) {
     width = value;

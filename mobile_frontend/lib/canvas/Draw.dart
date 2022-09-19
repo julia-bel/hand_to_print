@@ -20,7 +20,7 @@ class DrawState extends State<Draw> {
     var customPaint = CustomPaint(
       child: Container(
         height: () {
-          var canvasHeight = (MediaQuery.of(context).size.height - canvasProvider.appBarHeight) * 0.85;
+          var canvasHeight = (MediaQuery.of(context).size.height - canvasProvider.appBarHeight) * 0.7;
           canvasProvider.setHeight(canvasHeight);
           return canvasHeight;
         }.call(),
@@ -31,17 +31,62 @@ class DrawState extends State<Draw> {
           return canvasWidth;
         }.call(),
 
-        color: Colors.black,
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(width: 1.0, color: Colors.grey),
+          ),
+        ),
       ),
-      foregroundPainter: Painter(),
+      foregroundPainter: Painter(pointsList: canvasProvider.pointsList),
     );
 
-    return CustomPaint(
-      child: customPaint,
-      foregroundPainter: Painter(),
-    );
+    return
+      GestureDetector(
+        onPanUpdate: (details) {
+          setState(() {
+            RenderObject? renderBox = context.findRenderObject();
+            canvasProvider.pointsList.add(DrawingPoints(
+                points: details.localPosition,
+                paint: Paint()
+                  ..strokeCap = StrokeCap.round
+                  ..isAntiAlias = true
+                  ..strokeWidth = 5,
+                isSpace: false));
+          });
+        },
+        onPanStart: (details) {
+          setState(() {
+            RenderObject? renderBox = context.findRenderObject();
+            canvasProvider.pointsList.add(DrawingPoints(
+            points: details.localPosition,
+            paint: Paint()
+            ..strokeCap = StrokeCap.round
+            ..isAntiAlias = true
+            ..strokeWidth = 5,
+            isSpace: false));
+          });
+        },
+        onPanEnd: (details) {
+          setState(() {
+            canvasProvider.pointsList.add(DrawingPoints(points: Offset(0,0), paint: Paint(), isSpace: true));
+          });
+        },
+        child:
+        ClipRRect(
+          child: customPaint
+        )
+      );
+
+
 
   }
+}
+
+class DrawingPoints {
+  Paint paint;
+  Offset points;
+  DrawingPoints({required this.points, required this.paint, required this.isSpace});
+  bool isSpace;
 }
 
 
