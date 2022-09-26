@@ -27,4 +27,9 @@ class HttpService {
     });
   }
 
+  static sendPictures(List<Image> imgs) {
+
+  }
+
+
 }

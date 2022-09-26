@@ -39,31 +39,69 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
 
-    CanvasProvider canvasProvider = Provider.of<CanvasProvider>(context);
+    CanvasProvider canvasProvider = Provider.of<CanvasProvider>(context, listen: false);
 
     var appBar = AppBar(
       title: Text(widget.title),
     );
 
     canvasProvider.appBarHeight = appBar.preferredSize.height;
-    log(canvasProvider.appBarHeight.toString());
+
     return Scaffold(
       appBar: appBar,
       body: Column(
         children: [
           Draw(),
           OutlinedButton(
-              onPressed: () {
-                ImageService.createImage(canvasProvider.width, canvasProvider.height, canvasProvider.pointsList);
-              },
-              child: const Text('Сохранить')
+            onPressed: () {
+              ImageService.createImage(canvasProvider.width, canvasProvider.height, canvasProvider.pointsLists);
+            },
+            child: const Text('Сохранить')
+          ),
+          OutlinedButton(
+            onPressed: () {
+              canvasProvider.pointsLists[canvasProvider.curList].clear();
+            },
+            child: const Text('Очистить')
+          ),
+          OutlinedButton(
+            onPressed: () {
+              setState(() {
+                canvasProvider.pointsLists.add([]);
+                canvasProvider.curList = canvasProvider.pointsLists.length - 1;
+              });
+            },
+            child: const Text('Добавить канвас')
           ),
           OutlinedButton(
               onPressed: () {
-                canvasProvider.pointsList.clear();
+                setState(() {
+                  if (canvasProvider.pointsLists.length > 0) {
+                    canvasProvider.pointsLists.removeAt(canvasProvider.curList);
+                    if (canvasProvider.curList > 0) canvasProvider.curList--;
+                  }
+                });
               },
-              child: const Text('Очистить')
-          )
+              child: const Text('Удалить канвас')
+          ),
+          OutlinedButton(
+            onPressed: () {
+              setState(() {
+                if (canvasProvider.curList > 0) canvasProvider.curList--;
+              });
+            },
+            child: const Text('Предыдущий канвас')
+          ),
+          OutlinedButton(
+            onPressed: () {
+              setState(() {
+                if (canvasProvider.curList < canvasProvider.pointsLists.length - 1) canvasProvider.curList++;
+              });
+            },
+            child: const Text('Следующий канвас')
+          ),
+          Text((canvasProvider.curList + 1).toString()),
+          Text(canvasProvider.pointsLists.length.toString())
         ],
       )
     );
@@ -76,7 +114,9 @@ class CanvasProvider extends ChangeNotifier {
   double width = 0;
   double height = 0;
   double appBarHeight = 0;
-  List<DrawingPoints> pointsList = [];
+
+  List<List<DrawingPoints>> pointsLists = [[]];
+  int curList = 0;
 
   void setWidth(double value) {
     width = value;
