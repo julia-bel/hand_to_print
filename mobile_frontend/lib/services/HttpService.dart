@@ -59,4 +59,10 @@ class HttpService {
     await file.writeAsBytes(bytes, flush: true);
     OpenFile.open(path.path + '/' + fileName);
   }
+
+
+  static sendPictures(List<Image> imgs) {
+
+  }
+
 }

@@ -4,16 +4,20 @@ import '../canvas/Painter.dart';
 
 class ImageService {
 
-  static createImage(canvasWidth, canvasHeight, points) {
+  static createImage (canvasWidth, canvasHeight, pointsLists) async {
 
-    var pictureRecorder = new PictureRecorder();
-    Canvas canvas = new Canvas(pictureRecorder);
-    Painter painter = new Painter(pointsList: points);
+    List<Image> imgs = [];
 
-    painter.paint(canvas, new Size(canvasWidth, canvasHeight));
+    for (final pointsList in pointsLists) {
+      var pictureRecorder = new PictureRecorder();
+      Canvas canvas = new Canvas(pictureRecorder);
+      Painter painter = new Painter(pointsList: pointsList);
 
-    pictureRecorder.endRecording().toImage(canvasWidth.floor(), canvasHeight.floor()).then((img) {
-      HttpService.sendPicture(img);
-    });
+      painter.paint(canvas, new Size(canvasWidth, canvasHeight));
+
+      Image img = await pictureRecorder.endRecording().toImage(canvasWidth.floor(), canvasHeight.floor());
+      imgs.add(img);
+    }
+    HttpService.sendPictures(imgs);
   }
 }
