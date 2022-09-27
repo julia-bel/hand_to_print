@@ -7,33 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 
 class HttpService {
-  static sendPicture(Image img) {
-    img.toByteData(format: ImageByteFormat.png).then((value)
-    async {
-      if (value != null) {
-        var server_url = 'http://192.168.1.93:8086/text_recognition';
-        log('Create request to ' + server_url);
-        var request = http.MultipartRequest('POST', Uri.parse(server_url));
-        request.files.add(
-            http.MultipartFile.fromBytes(
-                'text_image', value.buffer.asUint8List()
-            )
-        );
-        log('Image file successfully added to request object');
-        http.StreamedResponse response = await request.send();
-        log('Got response from server');
-        if (response.statusCode == 201){
-          var text = await response.stream.bytesToString();
-          log('Start creating pdf');
-          await createPDF(text);
-          log('Finish creating pdf');
-        } else {
-          log(response.reasonPhrase);
-        }
-      }
-    });
-  }
-
   static Future<void> createPDF(String text) async {
     PdfDocument document = PdfDocument();
 
@@ -61,8 +34,30 @@ class HttpService {
   }
 
 
-  static sendPictures(List<Image> imgs) {
-
+  static sendPictures(List<Image> images) async {
+    var server_url = 'http://192.168.1.93:8086/text_recognition';
+    log('Create request to ' + server_url);
+    var request = http.MultipartRequest('POST', Uri.parse(server_url));
+    for (int i = 0; i < images.length; i++) {
+      var value = await images[i].toByteData(format: ImageByteFormat.png);
+      if (value != null) {
+        request.files.add(
+            http.MultipartFile.fromBytes(
+                'text_image', value.buffer.asUint8List()
+            )
+        );
+      }
+    }
+    log('Images files successfully added to request object');
+    http.StreamedResponse response = await request.send();
+    log('Got response from server');
+    if (response.statusCode == 201) {
+      var text = await response.stream.bytesToString();
+      log('Start creating pdf');
+      await createPDF(text);
+      log('Finish creating pdf');
+    } else {
+      log(response.reasonPhrase);
+    }
   }
-
 }
