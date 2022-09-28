@@ -19,7 +19,7 @@ class HttpService {
         bounds: Rect.fromLTWH(0, 0, size.width, size.height)
     );
 
-    List<int> bytes = document.save();
+    List<int> bytes = document.save() as List<int>;
     document.dispose();
     
     saveAndLaunchFile(bytes, 'Output.pdf');

@@ -1,6 +1,8 @@
-import 'dart:developer';
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'WidgetSize.dart';
 import 'canvas/Draw.dart';
 import 'services/ImageService.dart';
 
@@ -18,7 +20,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: Colors.pink[700],
+        ),
       ),
       home: const MyHomePage(title: 'Hand To Print'),
     );
@@ -43,6 +47,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var appBar = AppBar(
       title: Text(widget.title),
+      actions: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(right: 25.0),
+          child: GestureDetector(
+            onTap: () {
+              ImageService.createImage(canvasProvider.width, canvasProvider.height, canvasProvider.pointsLists);
+            },
+            child: Icon(
+              Icons.save_alt,
+              size: 30.0,
+            ),
+          )
+        )
+      ],
     );
 
     canvasProvider.appBarHeight = appBar.preferredSize.height;
@@ -51,63 +69,140 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: appBar,
       body: Column(
         children: [
-          Draw(),
-          OutlinedButton(
-            onPressed: () {
-              ImageService.createImage(canvasProvider.width, canvasProvider.height, canvasProvider.pointsLists);
-            },
-            child: const Text('Сохранить')
-          ),
-          OutlinedButton(
-            onPressed: () {
-              canvasProvider.pointsLists[canvasProvider.curList].clear();
-            },
-            child: const Text('Очистить')
-          ),
-          OutlinedButton(
-            onPressed: () {
+          WidgetSize(
+            onChange: (Size size) {
               setState(() {
-                canvasProvider.pointsLists.add([]);
-                canvasProvider.curList = canvasProvider.pointsLists.length - 1;
+                canvasProvider.height = size.height;
+                canvasProvider.width = size.width;
               });
             },
-            child: const Text('Добавить канвас')
+            child:
+              Expanded(child:
+                Stack(
+                  children: [
+                    Draw(),
+                    Container(
+                      margin: const EdgeInsets.only(right: 5.0, bottom: 5.0),
+                      child:
+                        Align(
+                          alignment: AlignmentDirectional.bottomEnd,
+                          child:   IconButton(
+                            icon: Icon(
+                              Icons.backspace_outlined,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 35.0,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                int pointCountToRemove = min(canvasProvider.pointsLists[canvasProvider.curList].length, 5);
+                                int listLength = canvasProvider.pointsLists[canvasProvider.curList].length;
+                                canvasProvider.pointsLists[canvasProvider.curList].removeRange(listLength - pointCountToRemove, listLength - 1);
+                              });
+                            },
+                          ),
+                        ),
+                    )
+                  ],
+                )
+              )
           ),
-          OutlinedButton(
-              onPressed: () {
-                setState(() {
-                  if (canvasProvider.pointsLists.length > 0) {
-                    canvasProvider.pointsLists.removeAt(canvasProvider.curList);
-                    if (canvasProvider.curList > 0) canvasProvider.curList--;
-                  }
-                });
-              },
-              child: const Text('Удалить канвас')
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Icon(
+                  CupertinoIcons.delete,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 35.0,
+                ),
+                onPressed: () {
+                  setState(() {
+                    if (canvasProvider.pointsLists.length > 1) {
+                      canvasProvider.pointsLists.removeAt(canvasProvider.curList);
+                      if (canvasProvider.curList > 0) canvasProvider.curList--;
+                    }
+                  });
+                },
+              ),
+              Container(
+                  child: getSwitchCanvasWidget(canvasProvider)
+              ),
+              IconButton(
+                icon: Icon(
+                  CupertinoIcons.clear,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 35.0,
+                ),
+                onPressed: () {
+                  setState(() {
+                    canvasProvider.pointsLists[canvasProvider.curList].clear();
+                  });
+                },
+              ),
+            ],
           ),
-          OutlinedButton(
-            onPressed: () {
-              setState(() {
-                if (canvasProvider.curList > 0) canvasProvider.curList--;
-              });
-            },
-            child: const Text('Предыдущий канвас')
-          ),
-          OutlinedButton(
-            onPressed: () {
-              setState(() {
-                if (canvasProvider.curList < canvasProvider.pointsLists.length - 1) canvasProvider.curList++;
-              });
-            },
-            child: const Text('Следующий канвас')
-          ),
-          Text((canvasProvider.curList + 1).toString()),
-          Text(canvasProvider.pointsLists.length.toString())
         ],
       )
     );
-
+  }
+  
+  getNextCanvasWidget(CanvasProvider canvasProvider) {
+    if (canvasProvider.curList != canvasProvider.pointsLists.length - 1) {
+      return IconButton(
+        icon: Icon(
+          CupertinoIcons.right_chevron,
+          color: Theme
+              .of(context)
+              .colorScheme.primary,
+          size: 40.0,
+        ),
+        onPressed: () {
+          setState(() {
+            if (canvasProvider.curList <
+                canvasProvider.pointsLists.length - 1) canvasProvider.curList++;
+          });
+        },
+      );
+    } else {
+      return IconButton(
+        icon: Icon(
+          CupertinoIcons.add_circled,
+          color: Theme
+              .of(context)
+              .colorScheme.primary,
+          size: 35.0,
+        ),
+        onPressed: () {
+          setState(() {
+            canvasProvider.pointsLists.add([]);
+            canvasProvider.curList = canvasProvider.pointsLists.length - 1;
+          });
+        },
+      );
+    }
   }
 
+  getSwitchCanvasWidget(CanvasProvider canvasProvider) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(
+            CupertinoIcons.left_chevron,
+            color: Theme.of(context).colorScheme.primary,
+            size: 40.0,
+          ),
+          onPressed: () {
+            setState(() {
+              if (canvasProvider.curList > 0) canvasProvider.curList--;
+            });
+          },
+        ),
+        Text((canvasProvider.curList + 1).toString()+"/", style: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.primary)),
+        Text(canvasProvider.pointsLists.length.toString(), style: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.primary)),
+        getNextCanvasWidget(canvasProvider),
+      ],
+    );
+  }
 }
 
 class CanvasProvider extends ChangeNotifier {

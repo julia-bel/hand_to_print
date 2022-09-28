@@ -5,7 +5,6 @@ import '../canvas/Painter.dart';
 class ImageService {
 
   static createImage (canvasWidth, canvasHeight, pointsLists) async {
-
     List<Image> imgs = [];
 
     for (final pointsList in pointsLists) {

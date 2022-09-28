@@ -18,25 +18,14 @@ class DrawState extends State<Draw> {
     CanvasProvider canvasProvider = Provider.of<CanvasProvider>(context);
 
     var customPaint = CustomPaint(
-      child: Container(
-        height: () {
-          var canvasHeight = (MediaQuery.of(context).size.height - canvasProvider.appBarHeight) * 0.5;
-          canvasProvider.setHeight(canvasHeight);
-          return canvasHeight;
-        }.call(),
-
-        width: () {
-          var canvasWidth = MediaQuery.of(context).size.width;
-          canvasProvider.setWidth(canvasWidth);
-          return canvasWidth;
-        }.call(),
-
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(width: 1.0, color: Colors.grey),
+      child:
+        Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.primary),
+            ),
           ),
         ),
-      ),
       foregroundPainter: Painter(pointsList: canvasProvider.pointsLists[canvasProvider.curList]),
     );
 
@@ -76,9 +65,6 @@ class DrawState extends State<Draw> {
           child: customPaint
         )
       );
-
-
-
   }
 }
 

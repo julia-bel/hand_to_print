@@ -43,6 +43,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.2"
   crypto:
     dependency: transitive
     description:
@@ -295,14 +302,14 @@ packages:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.49"
+    version: "20.2.50"
   syncfusion_flutter_pdf:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: syncfusion_flutter_pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.4.49-beta"
+    version: "20.2.50"
   term_glyph:
     dependency: transitive
     description:
