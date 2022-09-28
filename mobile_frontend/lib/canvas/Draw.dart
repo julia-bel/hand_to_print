@@ -18,26 +18,15 @@ class DrawState extends State<Draw> {
     CanvasProvider canvasProvider = Provider.of<CanvasProvider>(context);
 
     var customPaint = CustomPaint(
-      child: Container(
-        height: () {
-          var canvasHeight = (MediaQuery.of(context).size.height - canvasProvider.appBarHeight) * 0.7;
-          canvasProvider.setHeight(canvasHeight);
-          return canvasHeight;
-        }.call(),
-
-        width: () {
-          var canvasWidth = MediaQuery.of(context).size.width;
-          canvasProvider.setWidth(canvasWidth);
-          return canvasWidth;
-        }.call(),
-
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(width: 1.0, color: Colors.grey),
+      child:
+        Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 1.0, color: Theme.of(context).colorScheme.primary),
+            ),
           ),
         ),
-      ),
-      foregroundPainter: Painter(pointsList: canvasProvider.pointsList),
+      foregroundPainter: Painter(pointsList: canvasProvider.pointsLists[canvasProvider.curList]),
     );
 
     return
@@ -45,7 +34,7 @@ class DrawState extends State<Draw> {
         onPanUpdate: (details) {
           setState(() {
             RenderObject? renderBox = context.findRenderObject();
-            canvasProvider.pointsList.add(DrawingPoints(
+            canvasProvider.pointsLists[canvasProvider.curList].add(DrawingPoints(
                 points: details.localPosition,
                 paint: Paint()
                   ..strokeCap = StrokeCap.round
@@ -57,7 +46,7 @@ class DrawState extends State<Draw> {
         onPanStart: (details) {
           setState(() {
             RenderObject? renderBox = context.findRenderObject();
-            canvasProvider.pointsList.add(DrawingPoints(
+            canvasProvider.pointsLists[canvasProvider.curList].add(DrawingPoints(
             points: details.localPosition,
             paint: Paint()
             ..strokeCap = StrokeCap.round
@@ -68,7 +57,7 @@ class DrawState extends State<Draw> {
         },
         onPanEnd: (details) {
           setState(() {
-            canvasProvider.pointsList.add(DrawingPoints(points: Offset(0,0), paint: Paint(), isSpace: true));
+            canvasProvider.pointsLists[canvasProvider.curList].add(DrawingPoints(points: Offset(0,0), paint: Paint(), isSpace: true));
           });
         },
         child:
@@ -76,9 +65,6 @@ class DrawState extends State<Draw> {
           child: customPaint
         )
       );
-
-
-
   }
 }
 
