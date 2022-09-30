@@ -53,6 +53,7 @@ dev_dependencies:
   http_parser: ^3.1.4
   open_file: ^3.1.0
   path_provider: ^2.0.11
+  syncfusion_flutter_pdf: ^20.2.50
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
