@@ -19,7 +19,7 @@ class HttpService {
         bounds: Rect.fromLTWH(0, 0, size.width, size.height)
     );
 
-    List<int> bytes = document.save() as List<int>;
+    List<int> bytes = await document.save();
     document.dispose();
     
     saveAndLaunchFile(bytes, 'Output.pdf');
@@ -35,7 +35,7 @@ class HttpService {
 
 
   static sendPictures(List<Image> images) async {
-    var server_url = 'http://192.168.1.93:8086/text_recognition';
+    var server_url = 'http://192.168.150.202:8086/text_recognition';
     log('Create request to ' + server_url);
     var request = http.MultipartRequest('POST', Uri.parse(server_url));
     for (int i = 0; i < images.length; i++) {
