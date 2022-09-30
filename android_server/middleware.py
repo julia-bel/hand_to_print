@@ -2,12 +2,13 @@ from abc import ABCMeta
 
 from aiohttp import web
 from aiohttp.web_request import Request
+from aiohttp.web_response import Response
 
 from utils.common import multidict_to_dict
 
 
 @web.middleware
-async def basic_validation(request: Request, handler: ABCMeta):
+async def basic_validation(request: Request, handler: ABCMeta) -> Response:
     logger = request.app.base_logger
     logger.info(f'Start process request: {request.method} {request.match_info.route.resource} '
                 f'{request.match_info.route.resource.canonical}')

@@ -6,7 +6,7 @@ from multidict import MultiDict
 from utils.const import LOG_LEVELS
 
 
-def set_logging(service_name: str):
+def set_logging(service_name: str) -> logging.Logger:
     logger = logging.getLogger(f'{service_name}')
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger.setLevel(LOG_LEVELS['INFO'])
@@ -14,7 +14,6 @@ def set_logging(service_name: str):
     handler_stdout = logging.StreamHandler(sys.stdout)
     handler_stdout.setFormatter(formatter)
     logger.addHandler(handler_stdout)
-
     return logger
 
 
