@@ -1,10 +1,11 @@
 import io
 
 from aiohttp import web
+from aiohttp.web_request import Request
 
 
 class TextImageActionHandler(web.View):
-    def __init__(self, request):
+    def __init__(self, request: Request):
         super().__init__(request)
         self.logger = request.action_logger if hasattr(request, 'action_logger') else request.app.base_logger
 

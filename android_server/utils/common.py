@@ -1,10 +1,12 @@
 import logging
 import sys
 
+from multidict import MultiDict
+
 from utils.const import LOG_LEVELS
 
 
-def set_logging(service_name):
+def set_logging(service_name: str):
     logger = logging.getLogger(f'{service_name}')
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger.setLevel(LOG_LEVELS['INFO'])
@@ -16,5 +18,5 @@ def set_logging(service_name):
     return logger
 
 
-def multidict_to_dict(multidict):
+def multidict_to_dict(multidict: MultiDict):
     return {k: multidict.getall(k) for k in multidict.keys()}
