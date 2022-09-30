@@ -1,4 +1,5 @@
 from aiohttp import web
+from aiohttp.web_app import Application
 
 from middleware import basic_validation
 from utils.common import set_logging
@@ -6,7 +7,7 @@ from utils.config import Config
 from text_images_handler import TextImageActionHandler
 
 
-async def init_app():
+async def init_app() -> Application:
     middlewares = [basic_validation]
     app = web.Application(middlewares=middlewares)
     app.config = Config
