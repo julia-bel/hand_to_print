@@ -15,6 +15,8 @@ class TextImageActionHandler(web.View):
             self.logger.info(f'TextImageActionHandler succesfully load images')
             images = [io.BytesIO(image) for image in self.request_body_data['text_image']]
             # text = ModelManager.preprocess(images)
-        text = 'ahahahahahaha, it is some text'
+        text = ""
+        for i in range(200):
+            text += f'{i}\n'
         self.logger.info('All images successfully proccessed')
         return web.json_response(data={'text': text}, status=201)
