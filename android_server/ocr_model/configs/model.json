@@ -1,0 +1,27 @@
+{
+    "charset": " !(),-./0123456789:;?ЁАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё#",
+    "max_pred_lines": 100,
+    "device": "cuda",
+    "preprocess_config": {
+        "width_divisor": 8,
+        "height_divisor": 32,
+        "padding_value": 255,
+        "constraints": [
+            "padding"
+        ],
+        "padding": {
+            "min_height": 480,
+            "min_width": 800
+        },
+        "preprocessings": [
+            {
+                "type": "dpi",
+                "source": 300,
+                "target": 150
+            },
+            {
+                "type": "to_grayscaled"
+            }
+        ]
+    }
+}
