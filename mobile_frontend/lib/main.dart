@@ -50,15 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
       actions: <Widget>[
         Padding(
           padding: EdgeInsets.only(right: 25.0),
-          child: GestureDetector(
-            onTap: () {
-              ImageService.createImage(canvasProvider.width, canvasProvider.height, canvasProvider.pointsLists);
-            },
-            child: Icon(
-              Icons.save_alt,
-              size: 30.0,
-            ),
-          )
+          child: getSaveHandler(canvasProvider)
         )
       ],
     );
@@ -201,6 +193,43 @@ class _MyHomePageState extends State<MyHomePage> {
         Text(canvasProvider.pointsLists.length.toString(), style: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.primary)),
         getNextCanvasWidget(canvasProvider),
       ],
+    );
+  }
+
+  getSaveHandler(CanvasProvider canvasProvider) {
+    return GestureDetector(
+      onTap: () async {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (_) {
+              return Dialog(
+                backgroundColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      // The loading indicator
+                      CircularProgressIndicator(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      // Some text
+                      Text('Loading...')
+                    ],
+                  ),
+                ),
+              );
+            }
+        );
+        await ImageService.getFile(canvasProvider.width, canvasProvider.height, canvasProvider.pointsLists);
+        Navigator.of(context).pop();
+      },
+      child: Icon(
+        Icons.save_alt,
+        size: 30.0,
+      )
     );
   }
 }
