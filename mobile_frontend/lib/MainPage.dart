@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -154,6 +155,11 @@ class _MainPageState extends State<MainPage> {
           } on TimeoutException {
             var snackBar = SnackBar(
               content: Text('Время ожидания истекло. Попробуйте еще раз'),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } on SocketException {
+            var snackBar = SnackBar(
+              content: Text('Отсутствует подключение к сети'),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
