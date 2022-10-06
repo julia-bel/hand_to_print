@@ -4,7 +4,7 @@ import '../canvas/Painter.dart';
 
 class ImageService {
 
-  static createImage (canvasWidth, canvasHeight, pointsLists) async {
+  static Future<void> getFile (canvasWidth, canvasHeight, pointsLists) async {
     List<Image> imgs = [];
 
     for (final pointsList in pointsLists) {
@@ -17,6 +17,6 @@ class ImageService {
       Image img = await pictureRecorder.endRecording().toImage(canvasWidth.floor(), canvasHeight.floor());
       imgs.add(img);
     }
-    HttpService.sendPictures(imgs);
+    await HttpService.sendPictures(imgs);
   }
 }

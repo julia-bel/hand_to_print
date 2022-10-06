@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
@@ -10,14 +11,18 @@ class HttpService {
   static Future<void> createPDF(String text) async {
     PdfDocument document = PdfDocument();
 
-    PdfFont font = PdfStandardFont(PdfFontFamily.helvetica, 12);
-    Size size = font.measureString(text);
+    final PdfPage page = document.pages.add();
+// Create a new PDF text element class and draw the flow layout text.
+    final PdfLayoutResult layoutResult = PdfTextElement(
+        text: text,
+        font: PdfStandardFont(PdfFontFamily.helvetica, 12),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)))
+        .draw(
+        page: page,
+        bounds: Rect.fromLTWH(
+            0, 0, page.getClientSize().width, page.getClientSize().height),
+        format: PdfLayoutFormat(layoutType: PdfLayoutType.paginate))!;
 
-    document.pages.add().graphics.drawString(
-        text, font,
-        brush: PdfBrushes.darkBlue,
-        bounds: Rect.fromLTWH(0, 0, size.width, size.height)
-    );
 
     List<int> bytes = await document.save();
     document.dispose();
@@ -35,7 +40,7 @@ class HttpService {
 
 
   static sendPictures(List<Image> images) async {
-    var server_url = 'http://192.168.150.202:8086/text_recognition';
+    var server_url = 'http://192.168.1.93:8086/text_recognition';
     log('Create request to ' + server_url);
     var request = http.MultipartRequest('POST', Uri.parse(server_url));
     for (int i = 0; i < images.length; i++) {
@@ -49,15 +54,17 @@ class HttpService {
       }
     }
     log('Images files successfully added to request object');
-    http.StreamedResponse response = await request.send();
+    http.StreamedResponse streamedResponse = await request.send().timeout(const Duration(seconds: 5));;
     log('Got response from server');
-    if (response.statusCode == 201) {
-      var text = await response.stream.bytesToString();
+    if (streamedResponse.statusCode == 201) {
+      var response = await http.Response.fromStream(streamedResponse);
+      var jsonResponse = await jsonDecode(response.body);
+      var text = jsonResponse['text'];
       log('Start creating pdf');
       await createPDF(text);
       log('Finish creating pdf');
     } else {
-      log(response.reasonPhrase);
+      log(streamedResponse.reasonPhrase);
     }
   }
 }
