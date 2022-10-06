@@ -54,9 +54,16 @@ dev_dependencies:
   open_file: ^3.1.0
   path_provider: ^2.0.11
   syncfusion_flutter_pdf: ^20.2.50
+  flutter_native_splash: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: "title.png"
+  android: true
+  ios: true
 
 # The following section is specific to Flutter packages.
 flutter:
