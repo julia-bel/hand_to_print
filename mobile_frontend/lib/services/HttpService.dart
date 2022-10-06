@@ -54,7 +54,7 @@ class HttpService {
       }
     }
     log('Images files successfully added to request object');
-    http.StreamedResponse streamedResponse = await request.send();
+    http.StreamedResponse streamedResponse = await request.send().timeout(const Duration(seconds: 5));;
     log('Got response from server');
     if (streamedResponse.statusCode == 201) {
       var response = await http.Response.fromStream(streamedResponse);

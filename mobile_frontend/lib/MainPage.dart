@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -146,7 +147,16 @@ class _MainPageState extends State<MainPage> {
                 );
               }
           );
-          await ImageService.getFile(canvasProvider.width, canvasProvider.height, canvasProvider.pointsLists);
+          try {
+            await ImageService.getFile(
+                canvasProvider.width, canvasProvider.height,
+                canvasProvider.pointsLists);
+          } on TimeoutException {
+            var snackBar = SnackBar(
+              content: Text('Время ожидания истекло. Попробуйте еще раз'),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
           Navigator.of(context).pop();
         },
         child: Icon(
