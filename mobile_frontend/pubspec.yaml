@@ -60,8 +60,8 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 flutter_native_splash:
-  color: "#ffffff"
-  image: "title.png"
+  color: "#C2185B"
+  image: "logo.png"
   android: true
   ios: true
 
