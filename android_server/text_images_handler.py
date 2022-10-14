@@ -5,6 +5,8 @@ from aiohttp import web
 from aiohttp.web_request import Request
 from aiohttp.web_response import Response
 
+from ocr_model.manager import ModelManager
+
 
 class TextImageActionHandler(web.View):
     model = ModelManager('ocr_model/weights/model.script')
@@ -18,10 +20,10 @@ class TextImageActionHandler(web.View):
           if self.request_body_data.get('text_image'):
               self.logger.info(f'TextImageActionHandler succesfully load images')
               images = [Image.open(io.BytesIO(image)) for image in self.request_body_data['text_image']]
-              text = model.predict(images)
+              text_list = self.model.predict(images)
           text = ""
-          for i in range(200):
-              text += f'{i}\n'
+          for i in range(len(text_list)):
+              text += f'{text_list[i]}\n'
           self.logger.info('All images successfully proccessed')
           return web.json_response(data={'text': text}, status=201)
       except Exception as e:
