@@ -63,8 +63,11 @@ class HttpService {
       log('Start creating pdf');
       await createPDF(text);
       log('Finish creating pdf');
+    } else if (streamedResponse.statusCode == 409) {
+        throw Exception("Произошла ошибка на сервере");
     } else {
       log(streamedResponse.reasonPhrase);
+      throw Exception(streamedResponse.reasonPhrase);
     }
   }
 }
