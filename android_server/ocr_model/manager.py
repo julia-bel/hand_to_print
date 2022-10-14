@@ -2,9 +2,10 @@ import re
 import cv2
 import torch
 import numpy as np
+import PIL
 
 from typing import Any, Dict, List, Optional
-from PIL import Image
+from PIL.Image import Image
 
 
 class ModelManager:
@@ -71,8 +72,8 @@ class ModelManager:
                         images[i],
                         self.preprocess_config["padding"]["min_width"],
                         self.preprocess_config["padding_value"])
-            if "normalize" in self.params["config"]["constraints"]:
-                sample["img"] = (sample["img"] - sample["img"].mean()) / sample["img"].std()
+            if "normalize" in self.preprocess_config["constraints"]:
+                images[i] = (images[i] - images[i].mean()) / images[i].std()
             samples["image"].append(images[i])
         samples["image"] = np.array(samples["image"])
         samples["reduced_shape"] = np.array(samples["reduced_shape"])

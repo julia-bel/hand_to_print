@@ -7,6 +7,8 @@ from aiohttp.web_response import Response
 
 
 class TextImageActionHandler(web.View):
+    model = ModelManager('ocr_model/weights/model.script')
+
     def __init__(self, request: Request):
         super().__init__(request)
         self.logger = request.action_logger if hasattr(request, 'action_logger') else request.app.base_logger
@@ -16,7 +18,7 @@ class TextImageActionHandler(web.View):
           if self.request_body_data.get('text_image'):
               self.logger.info(f'TextImageActionHandler succesfully load images')
               images = [Image.open(io.BytesIO(image)) for image in self.request_body_data['text_image']]
-              # text = ModelManager.preprocess(images)
+              text = model.predict(images)
           text = ""
           for i in range(200):
               text += f'{i}\n'
