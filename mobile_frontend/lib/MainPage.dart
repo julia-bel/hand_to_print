@@ -162,6 +162,11 @@ class _MainPageState extends State<MainPage> {
               content: Text('Отсутствует подключение к сети'),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } catch (exc) {
+            var snackBar = SnackBar(
+              content: Text(exc.toString().substring(11)),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
           Navigator.of(context).pop();
         },
