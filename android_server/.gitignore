@@ -1,8 +1,0 @@
-*.pyc
-*.swp
-.remote-sync.json
-venv
-.idea
-.idea/*
-*.toml
-tests

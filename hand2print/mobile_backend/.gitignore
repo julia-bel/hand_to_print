@@ -1,0 +1,5 @@
+.direnv
+.envrc
+__pycache__
+.venv
+/src/models
