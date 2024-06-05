@@ -1,0 +1,21 @@
+---
+type: docker
+kind: pipeline
+name: default
+
+steps:
+- name: Run
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run
+
+  commands:
+  - apk update
+  - apk add docker-compose
+  - docker-compose -p save-julia up -d --build
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run
